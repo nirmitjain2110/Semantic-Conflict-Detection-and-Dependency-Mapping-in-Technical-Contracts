@@ -2,9 +2,7 @@ import re
 from difflib import SequenceMatcher
 import fitz  # PyMuPDF
 
-# -----------------------------
-# PDF EXTRACTION
-# -----------------------------
+#pdf text extraction
 def extract_text_from_pdf(file_path):
     doc = fitz.open(file_path)
     text = ""
@@ -13,26 +11,20 @@ def extract_text_from_pdf(file_path):
     return text
 
 
-# -----------------------------
-# PREPROCESSING
-# -----------------------------
+#preprocessing: lowercase, remove extra spaces
 def preprocess(text):
     text = text.lower()
     text = re.sub(r'\s+', ' ', text)
     return text
 
 
-# -----------------------------
-# CLAUSE SPLITTING
-# -----------------------------
+#clause splitting
 def split_lines(text):
     lines = re.split(r'[.\n;]', text)
     return [line.strip() for line in lines if line.strip()]
 
 
-# -----------------------------
-# KEY-VALUE EXTRACTION
-# -----------------------------
+#key-value pair extraction
 def extract_kv_pairs(lines):
     pairs = []
 
@@ -59,9 +51,7 @@ def extract_kv_pairs(lines):
     return pairs
 
 
-# -----------------------------
-# SEMANTIC METRIC MAPPING
-# -----------------------------
+# semantic matching using difflib
 metric_map = {
     "U": ["uptime", "availability"],
     "M": ["maintenance", "downtime window", "scheduled downtime"],
@@ -93,9 +83,7 @@ def match_metric(text):
     return None
 
 
-# -----------------------------
-# DIRECT TEXT DETECTION (IMPORTANT FIX)
-# -----------------------------
+#direct metric detection from keywords (backup)
 def detect_metric_from_text(text):
     text = text.lower()
 
@@ -114,10 +102,7 @@ def detect_metric_from_text(text):
 
     return None
 
-
-# -----------------------------
-# VALUE EXTRACTION
-# -----------------------------
+#value extraction
 def extract_number(text):
     match = re.search(r'\d+\.?\d*', text)
     return float(match.group()) if match else None
